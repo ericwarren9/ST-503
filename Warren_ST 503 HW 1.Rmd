@@ -308,3 +308,12 @@ Therefore we can now get our expression of
 
 $$\mathbf{X^T X} = \begin{pmatrix} 1 & 1 & ...(1) & 1 \\ x_1 & x_2 & ... (x_i) & x_n \end{pmatrix} \begin{pmatrix} 1 & x_1 \\ 1 & x_2 \\ ... (1) & ... (x_i) \\ 1 & x_n \end{pmatrix} = \begin{pmatrix} n & \sum x_i \\ \sum x_i & \sum x_i^2 \end{pmatrix} = \begin{pmatrix} n & 0 \\ 0 & 1 \end{pmatrix}$$
 
+Now we know the solution to the normal equations is found by saying that $\mathbf{\hat{\beta}} = \mathbf{(X^T X)^{-1} X^T y}$ as long as $\mathbf{X^T X}$ is invertible, which we know is true because the inverse of a diagonal matrix is a diagonal matrix where the elements are the reciprocals of the corresponding elements in the original matrix. Therefore, if $\mathbf{X^T X} = \begin{pmatrix} n & 0 \\ 0 & 1 \end{pmatrix}$ then $\mathbf{(X^T X)^{-1}} = \begin{pmatrix} \frac{1}{n} & 0 \\ 0 & 1 \end{pmatrix}$. Now, 
+
+$$\mathbf{X^T y} =  \begin{pmatrix} 1 & 1 & ...(1) & 1 \\ x_1 & x_2 & ... (x_i) & x_n \end{pmatrix} \begin{pmatrix} y_1 \\ y_2 \\ ... (y_i) \\ y_n \end{pmatrix} = \begin{pmatrix} \sum y_i \\ \sum x_i y_i \end{pmatrix} = \begin{pmatrix} n \bar{y} \\ \sum x_i y_i \end{pmatrix}$$
+
+So now we can rewrite solving our normal equations as 
+
+$$\mathbf{\hat{\beta}} = \mathbf{(X^T X)^{-1} X^T y} = \begin{pmatrix} \frac{1}{n} & 0 \\ 0 & 1 \end{pmatrix} \begin{pmatrix} n \bar{y} \\ \sum x_i y_i \end{pmatrix} = \begin{pmatrix} \bar{y} \\ \sum x_i y_i \end{pmatrix}$$
+
+So we have found our solutions to the normal equations being that $\mathbf{\hat{\beta}} = \begin{pmatrix} \bar{y} \\ \sum x_i y_i \end{pmatrix}$.
