@@ -292,7 +292,7 @@ We know the matrix $\mathbf{X}$ is a (i x p) matrix where i is the number of obs
 
 $$\mathbf{X} = \begin{pmatrix} 1 & x_1 \\ 1 & x_2 \\ ... (1) & ... (x_i) \\ 1 & x_n \end{pmatrix}$$
 
-## Part B (Finish to understand normal equations)
+## Part B
 
 Write the expression for $\mathbf{X^T X}$, and solve the normal equations.
 
