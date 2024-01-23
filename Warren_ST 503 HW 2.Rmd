@@ -196,7 +196,7 @@ linearModel <- lm(wage ~ educ + exper, uswages)
 summary(linearModel)
 ```
 
-Based on this model we can say that for every one additional year of education a person receives, we predict that their wage would go up by about `r linearModel$coefficients[[2]]` dollars. We can also say that for everyone one additional year of experience a person receives, we predict that their wage would go up by about `r linearModel$coefficients[[3]]` dollars. 
+Based on this model we can say that for every one additional year of education a person receives, we predict that their wage would go up by about `r linearModel$coefficients[[2]]` dollars if we keep the other predictors constant. We can also say that for everyone one additional year of experience a person receives, we predict that their wage would go up by about `r linearModel$coefficients[[3]]` dollars if we keep the other predictors constant. 
 
 ## Part B
 
@@ -210,7 +210,7 @@ logModel <- lm(log(wage) ~ educ + exper, uswages)
 summary(logModel)
 ```
 
-Based on this model we can say that for every one additional year of education a person receives, we predict that their wage would go up by about $e$ raised to `r logModel$coefficients[[2]]` or `r exp(logModel$coefficients[[2]])` dollars. We can also say that for everyone one additional year of experience a person receives, we predict that their wage would go up by about e raised to `r logModel$coefficients[[3]]` or `r exp(logModel$coefficients[[3]])` dollars. 
+Based on this model we can say that for every one additional year of education a person receives, we predict that their wage would go up by about $e$ raised to `r logModel$coefficients[[2]]` or `r exp(logModel$coefficients[[2]])` dollars if we keep the other predictors constant. We can also say that for everyone one additional year of experience a person receives, we predict that their wage would go up by about $e$ raised to `r logModel$coefficients[[3]]` or `r exp(logModel$coefficients[[3]])` dollars if we keep the other predictors constant. 
 
 ## Part C
 
