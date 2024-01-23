@@ -1,0 +1,219 @@
+---
+title: "ST 503 Homework 2"
+author: "Eric Warren"
+date: "`r Sys.Date()`"
+urlcolor: blue
+header-includes:
+  - \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "H", out.extra = "")
+options(scipen = 999)
+```
+
+```{r output setup, eval=FALSE, echo=FALSE}
+# This code allows us to render a pdf document
+rmarkdown::render("~/ST-503/Warren_ST 503 HW 2.Rmd", 
+              output_format = "pdf_document", 
+              output_options = list(
+                toc = TRUE, 
+                toc_depth = 3,
+                number_sections = TRUE,
+                extra_dependencies = "float"
+                )
+              )
+```
+
+# Problem 1
+
+## Part A
+
+What is the rank of X? 
+
+We know that the matrix of $X = \begin{pmatrix} 1 & 1 & 0 & 1 & 0 & 0 \\ 1 & 1 & 0 & 0 & 1 & 0 \\ 1 & 1 & 0 & 0 & 0 & 1 \\ 1 & 0 & 1 & 1 & 0 & 0 \\ 1 & 0 & 1 & 0 & 1 & 0 \\ 1 & 0 & 1 & 0 & 0 & 1 \end{pmatrix}$. Now from this, we can solve it through row echelon form (not going to lie does not look fun) or we can look at the columns and find linear dependencies to see if we can reduce the rank. Looking at column 1, this is just adding column 4 + column 5 + column 6 ($a_1 = a_4 + a_5 + a_6$) which means column 1 is linear dependent and we can get rid of it. Now for column 2 this is also linear dependent. This is found from adding columns 4, 5, 6 together and subtracting from column 3 ($a_2 = a_4 + a_5 + a_6 - a_3$). Now we cannot get column 3 from any combinations of columns 4, 5, and 6 so this is linearly independent along with the last 3 columns. Therefore, we have 4 linearly independent columns and the rank(X) = 4. This can also be checked via software and calculators which also shows that rank(X) = 4.
+
+## Part B
+
+Write the normal equations. Explain why the normal equations have infinitely many solutions.
+
+We know that we are going to have infinite many solutions to the normal equations because we do not have full column rank. Now we can find the normal solutions by writing out what $(X^T X) \hat{\beta} = X^T y$. We know that $\hat{\beta} = \begin{pmatrix} \mu \\ \alpha_1 \\ \alpha_2 \\ \beta_1 \\ \beta_2 \\ \beta_3 \end{pmatrix}$, $X^T = \begin{pmatrix} 1 & 1 & 1 & 1 & 1 & 1 \\ 1 & 1 & 1 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 & 1 & 1 \\ 1 & 0 & 0 & 1 & 0 & 0 \\ 0 & 1 & 0 & 0 & 1 & 0 \\ 0 & 0 & 1 & 0 & 0 & 1 \end{pmatrix}$, $X^T y = \begin{pmatrix} 1 & 1 & 1 & 1 & 1 & 1 \\ 1 & 1 & 1 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 & 1 & 1 \\ 1 & 0 & 0 & 1 & 0 & 0 \\ 0 & 1 & 0 & 0 & 1 & 0 \\ 0 & 0 & 1 & 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} y_{11} \\ y_{12} \\ y_{13} \\ y_{21} \\ y_{22} \\ y_{23} \end{pmatrix} = \begin{pmatrix} y_{..} \\ y_{1.} \\ y_{2.} \\ y_{.1} \\ y_{.2} \\ y_{.3} \end{pmatrix}$, and $X^T X = \begin{pmatrix} 1 & 1 & 1 & 1 & 1 & 1 \\ 1 & 1 & 1 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 & 1 & 1 \\ 1 & 0 & 0 & 1 & 0 & 0 \\ 0 & 1 & 0 & 0 & 1 & 0 \\ 0 & 0 & 1 & 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} 1 & 1 & 0 & 1 & 0 & 0 \\ 1 & 1 & 0 & 0 & 1 & 0 \\ 1 & 1 & 0 & 0 & 0 & 1 \\ 1 & 0 & 1 & 1 & 0 & 0 \\ 1 & 0 & 1 & 0 & 1 & 0 \\ 1 & 0 & 1 & 0 & 0 & 1 \end{pmatrix} = \begin{pmatrix} 6 & 3 & 3 & 2 & 2 & 2 \\ 3 & 3 & 0 & 1 & 1 & 1 \\ 3 & 0 & 3 & 1 & 1 & 1 \\ 2 & 1 & 1 & 2 & 0 & 0 \\ 2 & 1 & 1 & 0 & 2 & 0 \\ 2 & 1 & 1 & 0 & 0 & 2 \end{pmatrix}$. So our normal equation is $\begin{pmatrix} 6 & 3 & 3 & 2 & 2 & 2 \\ 3 & 3 & 0 & 1 & 1 & 1 \\ 3 & 0 & 3 & 1 & 1 & 1 \\ 2 & 1 & 1 & 2 & 0 & 0 \\ 2 & 1 & 1 & 0 & 2 & 0 \\ 2 & 1 & 1 & 0 & 0 & 2 \end{pmatrix} \begin{pmatrix} \mu \\ \alpha_1 \\ \alpha_2 \\ \beta_1 \\ \beta_2 \\ \beta_3 \end{pmatrix} = \begin{pmatrix} y_{..} \\ y_{1.} \\ y_{2.} \\ y_{.1} \\ y_{.2} \\ y_{.3} \end{pmatrix}$, which gets us the following system of equations:
+
+- $6 \mu + 3 \alpha_1 + 3 \alpha_2 + 2 \beta_1 + 2 \beta_2 + 2 \beta_3 = y_{..}$
+- $3 \mu + 3 \alpha_1 + \beta_1 + \beta_2 + \beta_3 = y_{1.}$
+- $3 \mu + 3 \alpha_2 + \beta_1 + \beta_2 + \beta_3 = y_{2.}$
+- $2 \mu + \alpha_1 + \alpha_2 + 2 \beta_1 = y_{.1}$
+- $2 \mu + \alpha_1 + \alpha_2 + 2 \beta_2 = y_{.2}$
+- $2 \mu + \alpha_1 + \alpha_2 + 2 \beta_3 = y_{.3}$
+
+Again, we know that we are going to have infinite many solutions to the normal equations because we do not have full column rank (or really full rank of the matrix). Moreover this means we can have a different $\hat{\beta}$ but still the same solution (for example our $\hat{y_{11}}$ value).
+
+## Part C
+
+Show that $\alpha_1 - \alpha_2$ is estimable.
+
+We know that $\alpha_1 - \alpha2$ is the column vector $\begin{pmatrix} 0 \\ 1 \\ -1 \\ 0 \\ 0 \\ 0 \end{pmatrix}$. Note that we have that $$e(X^T) = span\{{\begin{pmatrix} 1 \\ 1 \\ 0 \\ 1 \\ 0 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 0 \\ 1 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 1 \\ 1 \\ 0 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 1 \\ 0 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 1 \\ 0 \\ 0 \\ 1 \end{pmatrix}}\}$$
+
+Now to get $\begin{pmatrix} 0 \\ 1 \\ -1 \\ 0 \\ 0 \\ 0 \end{pmatrix}$ we can say that $\begin{pmatrix} 0 \\ 1 \\ -1 \\ 0 \\ 0 \\ 0 \end{pmatrix} = \begin{pmatrix} 1 \\ 1 \\ 0 \\ 1 \\ 0 \\ 0 \end{pmatrix} - \begin{pmatrix} 1 \\ 0 \\ 1 \\ 1 \\ 0 \\ 0 \end{pmatrix}$ which shows that $\alpha_1 - \alpha_2$ is estimable within the column space. 
+
+## Part D
+
+Show that $\beta_1 - 2 \beta_2 + \beta_3$ is estimable. 
+
+We know that $\beta_1 - 2 \beta_2 + \beta_3$ is the column vector $\begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \\ -2 \\ 1 \end{pmatrix}$. Note that we have that 
+
+$$e(X^T) = span\{{\begin{pmatrix} 1 \\ 1 \\ 0 \\ 1 \\ 0 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 0 \\ 1 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 1 \\ 1 \\ 0 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 1 \\ 0 \\ 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 1 \\ 0 \\ 1 \\ 0 \\ 0 \\ 1 \end{pmatrix}}\}$$
+
+Now to get $\begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \\ -2 \\ 1 \end{pmatrix}$ we can say that $\begin{pmatrix} 0 \\ 0 \\ 0 \\ 1 \\ -2 \\ 1 \end{pmatrix} = \begin{pmatrix} 1 \\ 1 \\ 0 \\ 1 \\ 0 \\ 0 \end{pmatrix} - 2 \begin{pmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 1 \\ 0 \end{pmatrix} + \begin{pmatrix} 1 \\ 1 \\ 0 \\ 0 \\ 0 \\ 1 \end{pmatrix}$ which shows that $\beta_1 - 2 \beta_2 + \beta_3$ is estimable within the column space. 
+
+## Part E
+
+Use `R` to check your answers in part (C) and (D).
+
+First we will show that $\alpha_1 - \alpha_2$ is estimable.
+```{r matrix 1}
+# Import library
+library(estimability)
+
+# Make matrix columns
+col1 <- rep(1, 6)
+col2 <- c(rep(1, 3), rep(0, 3))
+col3 <- c(rep(0, 3), rep(1, 3))
+col4 <- rep(c(1, 0, 0), 2)
+col5 <- rep(c(0, 1, 0), 2)
+col6 <- rep(c(0, 0, 1), 2)
+
+# Make matrix
+matrix <- matrix(c(col1, col2, col3, col4, col5, col6), nrow = 6)
+
+# Is alpha1 - alpha2 estimable? TRUE means yes
+is.estble(c(0, 1, -1, 0, 0, 0), nbasis = nonest.basis(matrix))
+```
+
+As we can see, $\alpha_1 - \alpha_2$ is estimable.
+
+Now we will show that $\beta_1 - 2 \beta_2 + \beta_3$ is estimable. 
+```{r matrix 2}
+# Is beta1 - 2 beta2 + beta3 estimable? TRUE means yes
+is.estble(c(0, 0, 0, 1, -2, 1), nbasis = nonest.basis(matrix))
+```
+
+As we can see, $\beta_1 - 2 \beta_2 + \beta_3$ is estimable.
+
+# Problem 2
+
+The dataset `teengamb` concerns a study of teenage gambling in Britain. Fit a regression model with the expenditure on gambling as the response and the sex, status, income and verbal score as predictors.
+```{r problem 2 model}
+# install.packages(c("faraway", "tidyverse")) # Uncomment if you do not have packages
+library(faraway)
+library(tidyverse)
+(
+  gambling <- as_tibble(teengamb) %>% 
+    mutate(sex = ifelse(sex == 0, "Male", 
+                        ifelse(sex == 1, "Female", "Error")))
+)
+
+# Check to make sure the number of "Error" values is 0; want it to be TRUE
+nrow(gambling %>% filter(sex == "Error")) == 0
+
+# Fit the model
+gamblingFit <- lm(gamble ~ ., gambling)
+```
+
+## Part A
+
+Present the output. What percentage of variation in the response is explained by these predictors?
+```{r problem 2-a}
+summary(gamblingFit)
+```
+
+As we can see by looking at the Adjusted R-Squared, we can see this value is `r summary(gamblingFit)$adj.r.squared`, which means that `r summary(gamblingFit)$adj.r.squared * 100`% of variation in the response is explained by these predictors. 
+
+## Part B
+
+Which observation has the largest (positive) residual? Give the case number.
+
+Here we can find the entry with the largest positive residual.
+```{r problem 2-b}
+# Get observation itself
+gambling[which.max(gamblingFit$residuals), ]
+
+# Get row number 
+which(gambling$gamble == 156)
+```
+
+As we can see here our case number (or row / observation in the data set) is row number `r which(gambling$gamble == 156)`.
+
+## Part C
+
+Compute the mean and median of the residuals.
+```{r problem 2-c}
+mean(gamblingFit$residuals)
+median(gamblingFit$residuals)
+```
+
+Here we can see that the mean of the residuals is `r mean(gamblingFit$residuals)` which makes sense since the expected value of residuals is 0. The median of the residuals, however, is `r median(gamblingFit$residuals)`, which shows that there could be high outliers in gambling that is driving our model to make decisions to include those values. Moreover, this means that the majority of our predicted values are greater than their corresponding actual gambling amounts.
+
+## Part D
+
+Compute the correlation of the residuals with the fitted values.
+
+```{r problem 2-d}
+cor(gamblingFit$fitted.values, gamblingFit$residuals)
+```
+
+Here we can see that our correlation between our fitted values and residuals for this model is about `r cor(gamblingFit$fitted.values, gamblingFit$residuals)` which is basically saying there is no correlation whatsoever between what our fitted values are and what are residuals might be.
+
+## Part E
+
+Compute the correlation of the residuals with the income.
+
+```{r problem 2-e}
+cor(gamblingFit$model$income, gamblingFit$residuals)
+```
+
+Here we can see that our correlation between our income and residuals for this model is about `r cor(gamblingFit$model$income, gamblingFit$residuals)` which is basically saying there is no correlation whatsoever between what our income is and what are residuals might be.
+
+## Part F
+
+For all other predictors held constant, what would be the difference in predicted expenditure on gambling for a male compared to a female?
+
+By looking at our output in **Part A**, we saw that our partial slope for the `sex` variable was `r gamblingFit$coefficients[[2]]`, meaning that if all other predictors are held constant, the difference in predicted expenditure on gambling for a male would be about `r gamblingFit$coefficients[[2]]` more pounds per year compared to a female.
+
+# Problem 3
+
+The dataset `uswages` is drawn as a sample from the Current Population Survey in 1988. 
+
+## Part A
+
+Fit a model with weekly wages as the response and years of education and experience as predictors. Report and give a simple interpretation to the regression coefficient for years of education. 
+
+```{r problem 3-a}
+# Make linear model
+linearModel <- lm(wage ~ educ + exper, uswages)
+
+# Show summary (output)
+summary(linearModel)
+```
+
+Based on this model we can say that for every one additional year of education a person receives, we predict that their wage would go up by about `r linearModel$coefficients[[2]]` dollars. We can also say that for everyone one additional year of experience a person receives, we predict that their wage would go up by about `r linearModel$coefficients[[3]]` dollars. 
+
+## Part B
+
+Now fit the same model but with logged weekly wages. Give an interpretation to the regression coefficient for years of education. 
+
+```{r problem 3-b}
+# Make linear model
+logModel <- lm(log(wage) ~ educ + exper, uswages)
+
+# Show summary (output)
+summary(logModel)
+```
+
+Based on this model we can say that for every one additional year of education a person receives, we predict that their wage would go up by about $e$ raised to `r logModel$coefficients[[2]]` or `r exp(logModel$coefficients[[2]])` dollars. We can also say that for everyone one additional year of experience a person receives, we predict that their wage would go up by about e raised to `r logModel$coefficients[[3]]` or `r exp(logModel$coefficients[[3]])` dollars. 
+
+## Part C
+
+Which interpretation is more natural?
+
+It is more natural to look at a multiple linear regression model without any transformations and just say the coefficients since there is no additional math calculations needed to understand what the coefficient values are in terms of increasing by one unit for the predictor has on the effect of the response. However, just because it is easier to say does not mean we should experiment with other models. Let us look at the adjusted R-squared values. For the multiple linear regression model we can see from **Part A** the adjusted R-square value is `r summary(linearModel)$adj.r.squared`, which means that `r summary(linearModel)$adj.r.squared * 100`% of variation in the response is explained by these predictors. However with taking the log of the response with our multiple linear regression model we can see from **Part B** the adjusted R-square value is `r summary(logModel)$adj.r.squared`, which means that `r summary(logModel)$adj.r.squared * 100`% of variation in the response is explained by these predictors. Generally, a higher adjusted R-square value indicates a better fit of the regression model to the data so we might have a hunch our latter model is better for prediction purposes, despite the former model being easier to communicate what the coefficients mean.
