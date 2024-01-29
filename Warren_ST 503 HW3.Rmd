@@ -1,0 +1,283 @@
+---
+title: "ST 503 Homework 3"
+author: "Eric Warren"
+date: "`r Sys.Date()`"
+urlcolor: blue
+header-includes:
+  - \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.pos = "H", out.extra = "")
+options(scipen = 999)
+```
+
+```{r output setup, eval=FALSE, echo=FALSE}
+# This code allows us to render a pdf document
+rmarkdown::render("~/ST-503/Warren_ST 503 HW3.Rmd", 
+              output_format = "pdf_document", 
+              output_options = list(
+                toc = TRUE, 
+                toc_depth = 3,
+                number_sections = TRUE,
+                extra_dependencies = "float"
+                )
+              )
+```
+
+# Problem 1
+
+Using the `teengamb` data, fit a model with gamble as the response and the other variables as predictors.
+
+```{r problem 1 model}
+# install.packages(c("faraway", "tidyverse")) # Uncomment if you do not have packages
+library(faraway)
+library(tidyverse)
+(
+  gambling <- as_tibble(teengamb) %>% 
+    mutate(sex = ifelse(sex == 0, "Male", 
+                        ifelse(sex == 1, "Female", "Error")))
+)
+
+# Check to make sure the number of "Error" values is 0; want it to be TRUE
+nrow(gambling %>% filter(sex == "Error")) == 0
+
+# Fit the model
+gamblingFit <- lm(gamble ~ ., gambling)
+```
+
+## Part A
+
+Which variables are statistically significant?
+
+We can tell that a predictor is statistically significant by looking at its corresponding p-value for its partial slope. If the p-value is less than equal some $\alpha$ value then we say it is statistically significant. In this case we will say $\alpha = 0.05$ so if the p-value for a predictor's partial slope is less than or equal to 0.05 then we can say it is statistically significant. 
+```{r problem 1-a}
+summary(gamblingFit)
+```
+
+As we can see, the two predictors that show this quality are `sex` and `income`.
+
+## Part B
+
+What interpretation should be given to the coefficient for `sex`?
+
+A nice thing in `R` when you are using a factor like `sex` is that it can give you an easy interpretation of the predictor. By looking at our summary in **Part A**, we can see that it says "sexMale" with an estimate of `r gamblingFit$coefficients[[2]]`. A reasonable interpretation that we can make is that if the sex of a teen gambler in Britain is a male then we expect (or predict) that they will gamble an additional `r gamblingFit$coefficients[[2]]` pounds in a year (as opposed to their female counterparts).
+
+## Part C
+
+Fit a model with just income as a predictor and use an F-test to compare it to the full model.
+
+Here we are going to see if we fit a model with just `income` if it predicts statistically as well as the full model we made. If the resulting p-value is less than equal some $\alpha$ value then we say that it is statistically significant to conclude that the "full model" is a better model to use than the reduced (as in at least one predictor in the full model not in the reduced model is significant -- partial slope is not zero). In this case we will say $\alpha = 0.05$ so if the p-value for a predictor's partial slope is less than or equal to 0.05 then we can say it is statistically significant. 
+```{r problem 1-c}
+# Make reduced model
+incomeGamblingFit <- lm(gamble ~ income, gambling)
+
+# Do ANOVA test to see if we can reduce model
+anova(incomeGamblingFit, gamblingFit)
+```
+
+We can see from our F-test that the resulting p-value is `r anova(incomeGamblingFit, gamblingFit)$"Pr(>F)"[[2]]` which means that we have statistically significant evidence to conclude that at least one predictor in the full model not in the reduced model is significant and that the "full model" is a better model to use than the reduced.
+
+# Problem 2
+
+Here we are going to use the `sat` data.
+```{r problem 2 data}
+(sat <- tibble(sat))
+```
+
+## Part A
+
+Fit a model with total sat score as the response and expend, ratio and salary as predictors. Test the hypothesis that $\beta_{Salary} = 0$. Test the hypothesis that $\beta_{salary} = \beta_{ratio} = \beta_{expend} = 0$. Do any of these predictors have an effect on the response?
+
+First let us take a look at the hypothesis that $\beta_{Salary} = 0$. We are going to fit our model and see if our resulting p-value is less than equal some $\alpha$ value then we say that it is statistically significant to conclude that salary is a significant predictor (beta is not equal to 0). In this case we will say $\alpha = 0.05$ so if the p-value for a predictor's partial slope is less than or equal to 0.05 then we can say it is statistically significant. 
+```{r problem 2-a1}
+# Fit the model
+satFit <- lm(total ~ salary + ratio + expend, sat)
+
+# Check the predictors
+summary(satFit)
+```
+
+Looking at our summary , we can see that the p-value for `salary` is about 0.0667 which is greater than 0.05. So we do not have significant evidence that $\beta_{Salary} \neq 0$ and instead have statistical evidence to think that $\beta_{Salary} = 0$ is a possibility since we failed to reject our null hypothesis.
+
+Now we are going to look at our hypothesis that $\beta_{salary} = \beta_{ratio} = \beta_{expend} = 0$. To do this, we are going to look at our full model of all the variables and our reduced model of the intercept and see what p-value we get from the corresponding F-test. If the p-value we get is less than or equal to 0.05 then we can say it is statistically significant. 
+```{r problem 2-a2}
+# Make intercept only model
+interceptOnlySAT <- lm(total ~ 1, sat)
+
+# Do F-test
+anova(interceptOnlySAT, satFit)
+```
+
+We can see from our F-test that the resulting p-value is `r anova(interceptOnlySAT, satFit)$"Pr(>F)"[[2]]` (less than 0.05) which means that we have statistically significant evidence to conclude that at least one predictor in the full model not in the reduced (intercept only) model is significant and that the "full model" is a better model to use than the reduced. Therefore, our hypothesis that $\beta_{salary} = \beta_{ratio} = \beta_{expend} = 0$ is proven to be statistically significantly false (rejected).
+
+Lastly, we will answer: Do any of these predictors have an effect on the response? In this case, we are going to see if our resulting p-value is less than equal some $\alpha$ value then we say that predictor is statistically significant (beta is not equal to 0). In this case we will say $\alpha = 0.05$ so if the p-value for a predictor's partial slope is less than or equal to 0.05 then we can say it is statistically significant. 
+```{r problem 2-a3}
+summary(satFit)
+```
+
+However, when we look at each predictor individually, we get conflicting results with our F-test. That is, with our F-test we showed that at least one predictor was statistically significant (its beta value is not 0); however, when looking at it individually we can see that none of them are statistically significant (and all have a possibility to have its partial slope be zero). What I would do is remove one variable at a time starting with the highest p-value and making a new model and check partial slopes until either all the remaining predictor(s) have a p-value less than or equal to 0.05 or we have an intercept-only model (no predictors) left. My guess is with the `salary` variable so close to 0.05, it could eventually become significant. Hint: This happens -- see below:
+```{r problem 2-a4}
+summary(lm(total ~ salary, sat))
+```
+
+## Part B
+
+Now add takers to the model. Test the hypothesis that $\beta_{salary} = 0$. Compare this model to the previous one using an F-test. Are the F-test and t-test here equivalent?
+
+First we will make the new model. Let us take a look at the hypothesis that $\beta_{Salary} = 0$. We are going to fit our model and see if our resulting p-value is less than equal some $\alpha$ value then we say that it is statistically significant to conclude that salary is a significant predictor (beta is not equal to 0). In this case we will say $\alpha = 0.05$ so if the p-value for a predictor's partial slope is less than or equal to 0.05 then we can say it is statistically significant. 
+```{r problem 2-b1}
+# Fit the model
+satFitUpdated <- lm(total ~ salary + ratio + expend + takers, sat)
+
+# Check the predictors
+summary(satFitUpdated)
+```
+
+Looking at our summary , we can see that the p-value for `salary` is about 0.496 which is greater than 0.05. So we do not have significant evidence that $\beta_{Salary} \neq 0$ and instead have statistical evidence to think that $\beta_{Salary} = 0$ is a possibility since we failed to reject our null hypothesis.
+
+Now we are going to compare it to our previous model without taker. Here we are going to do a F-test to see if $\beta_{Takers} = 0$.
+```{r problem 2-b2}
+anova(satFit, satFitUpdated)
+```
+
+Here with a really small p-value we can see that we have statistically significant evidence that $\beta_{Takers} \neq 0$. Also note that the t-test of individually looking at `takers` in the full model and doing the F-test provide the same result in terms of p-values. This makes sense since a t-statistic squared (following a t-distribution with x degrees of freedom) is the same a F-statistic (following a F-distribution with 1, x degrees of freedom). In this case we are looking at a t-statistic following a t-distribution with 45 degrees of freedom and a F-statistic following a F-distribution with 1, 45 degrees of freedom, which matches the above claim.
+
+# Problem 3
+
+The dataset `prostate` comes from a study on 97 men with prostate cancer who were due to receive a radical prostatectomy. Fit a model with lpsa as the response and lcavol as the predictor. Record the residual
+standard error and the $R^2$. We are going to fit the model and record these important quantities below. Please note for this problem when we say $R^2$ we are really looking at the adjusted $R^2$.
+```{r problem 3-1}
+#Make the model
+prostateModel1 <- lm(lpsa ~ lcavol, prostate)
+
+# Standard error
+(fit1SE <- summary(prostateModel1)$sigma)
+
+# Adjusted R-squared
+(fit1R2 <- summary(prostateModel1)$adj.r.squared)
+```
+
+Now add lweight, svi, lbph, age, lcp, pgg45 and gleason to the model one at a time. For each model record the residual standard error and the $R^2$. 
+
+First we will add lweight.
+```{r problem 3-2}
+#Make the model
+prostateModel2 <- lm(lpsa ~ lcavol + lweight, prostate)
+
+# Standard error
+(fit2SE <- summary(prostateModel2)$sigma)
+
+# Adjusted R-squared
+(fit2R2 <- summary(prostateModel2)$adj.r.squared)
+```
+
+Now add svi.
+```{r problem 3-3}
+#Make the model
+prostateModel3 <- lm(lpsa ~ lcavol + lweight + svi, prostate)
+
+# Standard error
+(fit3SE <- summary(prostateModel3)$sigma)
+
+# Adjusted R-squared
+(fit3R2 <- summary(prostateModel3)$adj.r.squared)
+```
+
+Now add lbph.
+```{r problem 3-4}
+#Make the model
+prostateModel4 <- lm(lpsa ~ lcavol + lweight + svi + lbph, prostate)
+
+# Standard error
+(fit4SE <- summary(prostateModel4)$sigma)
+
+# Adjusted R-squared
+(fit4R2 <- summary(prostateModel4)$adj.r.squared)
+```
+
+Now add age.
+```{r problem 3-5}
+#Make the model
+prostateModel5 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age, prostate)
+
+# Standard error
+(fit5SE <- summary(prostateModel5)$sigma)
+
+# Adjusted R-squared
+(fit5R2 <- summary(prostateModel5)$adj.r.squared)
+```
+
+Now add lcp.
+```{r problem 3-6}
+#Make the model
+prostateModel6 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp, prostate)
+
+# Standard error
+(fit6SE <- summary(prostateModel6)$sigma)
+
+# Adjusted R-squared
+(fit6R2 <- summary(prostateModel6)$adj.r.squared)
+```
+
+Now add pgg45.
+```{r problem 3-7}
+#Make the model
+prostateModel7 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45, prostate)
+
+# Standard error
+(fit7SE <- summary(prostateModel7)$sigma)
+
+# Adjusted R-squared
+(fit7R2 <- summary(prostateModel7)$adj.r.squared)
+```
+
+Lastly add gleason.
+```{r problem 3-8}
+#Make the model
+prostateModel8 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45 + gleason, prostate)
+
+# Standard error
+(fit8SE <- summary(prostateModel8)$sigma)
+
+# Adjusted R-squared
+(fit8R2 <- summary(prostateModel8)$adj.r.squared)
+```
+
+Now we will plot the trends in these two statistics and comment on any patterns you see.
+```{r problem 3-9}
+# Make vector of r^2 values
+r2 <- c(fit1R2, fit2R2, fit3R2, fit4R2, fit5R2, fit6R2, fit7R2, fit8R2)
+
+# Make vector of SE values
+se <- c(fit1SE, fit2SE, fit3SE, fit4SE, fit5SE, fit6SE, fit7SE, fit8SE)
+
+# Plot the trend
+plot(r2,
+     se,
+     main = "Comparing Adjusted R^2 values to its Standard Error",
+     xlab = "Adjusted R^2 Value", 
+     ylab = "Standard Error"
+     )
+abline(lm(se ~ r2), col = "blue")
+```
+
+It seems here that as the adjusted $R^2$ gets higher the standard error gets lower. It seems to have this negative linear property with each other. This makes sense given the $R^2$ formula will include the sum of squares residual (and the lower residual amount makes a higher $R^2$).
+
+# Problem 4
+
+Consider the analysis of variance (ANOVA) model: $y_i = \mu + \alpha_i + e_{ij}$ where i = 1, 2; j = 1, ... , 5; and  we assume $e_{ij}$ are IID N(0, $\sigma^2$). Find the probability distribution of the BLUE of $\mu + \alpha_1$.
+
+First, we know that this type of model follows a Gauss-Markov Model (implying the errors follow a normal distribution). Due to this, we can assume that our BLUE of $\mu + \alpha_1$ will also follow a normal distribution as well. Thus if we call $\hat{\theta}$ our estimator, we know that our BLUE will follow a $N(\mathbf{E}(\hat{\theta}), \mathbf{Var}(\hat{\theta}))$
+
+Next we can see if this estimable. We can see that $c^T = \begin{pmatrix} 1 & 1 & 0 \end{pmatrix}$ and $\hat{\beta} = \begin{pmatrix} \mu \\ \alpha_1 \\ \alpha_2 \end{pmatrix}$ which we can easily prove is in the column space of $X^T$ -- see previous lecture materials where we say that 
+
+$$X^T = \begin{pmatrix} 1 & ... & 1 & 1 & ... & 1 \\ 1 & ... & 1 & 0 & ... & 0 \\ 0 & ... & 0 & 1 & ... & 1 \end{pmatrix}$$
+
+So we know that $c^T \hat{\beta}$ is estimable. 
+
+Next, we can find the expected value of the $\mu + \alpha_1$. Note from lecture we can say the best estimator is $\frac{y_{1.}}{5}$ which are all the values averaged out that contain $\mu$ and $\alpha_1$. We can find the expected value of that to be $\mathbf{E}(\frac{y_{1.}}{5}) = \mathbf{E}(\frac{y_{11}}{5}) + \mathbf{E}(\frac{y_{12}}{5}) + \mathbf{E}(\frac{y_{13}}{5}) + \mathbf{E}(\frac{y_{14}}{5}) + \mathbf{E}(\frac{y_{15}}{5}) = \frac{\mu + \alpha_1}{5} + \frac{\mu + \alpha_1}{5} + \frac{\mu + \alpha_1}{5} + \frac{\mu + \alpha_1}{5} + \frac{\mu + \alpha_1}{5} = 5 * \frac{\mu + \alpha_1}{5} = \mu + \alpha_1$. So our expected value is $\mu + \alpha_1$.
+
+Now we can find our variance. Using our estimator $\frac{y_{1.}}{5}$ we will find its variance. Note all covariance is equal to 0 because of the iid condition so please note for variance formula simplification, I skip showing all the covariances since they are equal to 0. We can find the variance to be $\mathbf{Var}(\frac{y_{1.}}{5}) = \frac{1}{25} \mathbf{Var}(y_{1.}) = \frac{1}{25} [\mathbf{Var}(y_{11}) + \mathbf{Var}(y_{12}) + \mathbf{Var}(y_{13}) + \mathbf{Var}(y_{14}) + \mathbf{Var}(y_{15})] = \frac{1}{25} [\sigma^2 + \sigma^2 + \sigma^2 + \sigma^2 + \sigma^2] = \frac{1}{25} [5 \sigma^2] = \frac{\sigma^2}{5}$. So we found our variance to be $\frac{\sigma^2}{5}$.
+
+Therefore, by knowing if we call $\hat{\theta}$ our estimator that our BLUE will follow a $N(\mathbf{E}(\hat{\theta}), \mathbf{Var}(\hat{\theta}))$, we can plug our above results in to see that our BLUE will follow a $N(\mu + \alpha_1, \frac{\sigma^2}{5})$ probability distribution.
