@@ -146,7 +146,7 @@ Here with a really small p-value we can see that we have statistically significa
 # Problem 3
 
 The dataset `prostate` comes from a study on 97 men with prostate cancer who were due to receive a radical prostatectomy. Fit a model with lpsa as the response and lcavol as the predictor. Record the residual
-standard error and the $R^2$. We are going to fit the model and record these important quantities below. Please note for this problem when we say $R^2$ we are really looking at the adjusted $R^2$.
+standard error and the $R^2$. We are going to fit the model and record these important quantities below. Please note for this problem when we say $R^2$ we are really looking at the $R^2$.
 ```{r problem 3-1}
 #Make the model
 prostateModel1 <- lm(lpsa ~ lcavol, prostate)
@@ -154,8 +154,8 @@ prostateModel1 <- lm(lpsa ~ lcavol, prostate)
 # Standard error
 (fit1SE <- summary(prostateModel1)$sigma)
 
-# Adjusted R-squared
-(fit1R2 <- summary(prostateModel1)$adj.r.squared)
+# R-squared
+(fit1R2 <- summary(prostateModel1)$r.squared)
 ```
 
 Now add lweight, svi, lbph, age, lcp, pgg45 and gleason to the model one at a time. For each model record the residual standard error and the $R^2$. 
@@ -168,8 +168,8 @@ prostateModel2 <- lm(lpsa ~ lcavol + lweight, prostate)
 # Standard error
 (fit2SE <- summary(prostateModel2)$sigma)
 
-# Adjusted R-squared
-(fit2R2 <- summary(prostateModel2)$adj.r.squared)
+# R-squared
+(fit2R2 <- summary(prostateModel2)$r.squared)
 ```
 
 Now add svi.
@@ -180,8 +180,8 @@ prostateModel3 <- lm(lpsa ~ lcavol + lweight + svi, prostate)
 # Standard error
 (fit3SE <- summary(prostateModel3)$sigma)
 
-# Adjusted R-squared
-(fit3R2 <- summary(prostateModel3)$adj.r.squared)
+# R-squared
+(fit3R2 <- summary(prostateModel3)$r.squared)
 ```
 
 Now add lbph.
@@ -192,8 +192,8 @@ prostateModel4 <- lm(lpsa ~ lcavol + lweight + svi + lbph, prostate)
 # Standard error
 (fit4SE <- summary(prostateModel4)$sigma)
 
-# Adjusted R-squared
-(fit4R2 <- summary(prostateModel4)$adj.r.squared)
+# R-squared
+(fit4R2 <- summary(prostateModel4)$r.squared)
 ```
 
 Now add age.
@@ -204,8 +204,8 @@ prostateModel5 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age, prostate)
 # Standard error
 (fit5SE <- summary(prostateModel5)$sigma)
 
-# Adjusted R-squared
-(fit5R2 <- summary(prostateModel5)$adj.r.squared)
+# R-squared
+(fit5R2 <- summary(prostateModel5)$r.squared)
 ```
 
 Now add lcp.
@@ -216,8 +216,8 @@ prostateModel6 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp, prostate)
 # Standard error
 (fit6SE <- summary(prostateModel6)$sigma)
 
-# Adjusted R-squared
-(fit6R2 <- summary(prostateModel6)$adj.r.squared)
+# R-squared
+(fit6R2 <- summary(prostateModel6)$r.squared)
 ```
 
 Now add pgg45.
@@ -228,8 +228,8 @@ prostateModel7 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45, p
 # Standard error
 (fit7SE <- summary(prostateModel7)$sigma)
 
-# Adjusted R-squared
-(fit7R2 <- summary(prostateModel7)$adj.r.squared)
+# R-squared
+(fit7R2 <- summary(prostateModel7)$r.squared)
 ```
 
 Lastly add gleason.
@@ -240,8 +240,8 @@ prostateModel8 <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45 + 
 # Standard error
 (fit8SE <- summary(prostateModel8)$sigma)
 
-# Adjusted R-squared
-(fit8R2 <- summary(prostateModel8)$adj.r.squared)
+# R-squared
+(fit8R2 <- summary(prostateModel8)$r.squared)
 ```
 
 Now we will plot the trends in these two statistics and comment on any patterns you see.
@@ -255,14 +255,14 @@ se <- c(fit1SE, fit2SE, fit3SE, fit4SE, fit5SE, fit6SE, fit7SE, fit8SE)
 # Plot the trend
 plot(r2,
      se,
-     main = "Comparing Adjusted R^2 values to its Standard Error",
-     xlab = "Adjusted R^2 Value", 
+     main = "Comparing R^2 values to its Standard Error",
+     xlab = "fR^2 Value", 
      ylab = "Standard Error"
      )
 abline(lm(se ~ r2), col = "blue")
 ```
 
-It seems here that as the adjusted $R^2$ gets higher the standard error gets lower. It seems to have this negative linear property with each other. This makes sense given the $R^2$ formula will include the sum of squares residual (and the lower residual amount makes a higher $R^2$).
+It seems here that as the $R^2$ gets higher the standard error gets lower. It seems to have this negative linear property with each other. This makes sense given the $R^2$ formula will include the sum of squares residual (and the lower residual amount makes a higher $R^2$).
 
 # Problem 4
 
