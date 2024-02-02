@@ -256,13 +256,13 @@ se <- c(fit1SE, fit2SE, fit3SE, fit4SE, fit5SE, fit6SE, fit7SE, fit8SE)
 plot(r2,
      se,
      main = "Comparing R^2 values to its Standard Error",
-     xlab = "fR^2 Value", 
+     xlab = "R^2 Value", 
      ylab = "Standard Error"
      )
 abline(lm(se ~ r2), col = "blue")
 ```
 
-It seems here that as the $R^2$ gets higher the standard error gets lower. It seems to have this negative linear property with each other. This makes sense given the $R^2$ formula will include the sum of squares residual (and the lower residual amount makes a higher $R^2$).
+It seems here that as the $R^2$ gets higher the standard error gets lower. It seems to have this negative linear property with each other. This makes sense given the $R^2$ formula will include the sum of squares residual (and the lower residual amount makes a higher $R^2$). It is also cool to note that this pattern seems to be close to a negative linear relationship, at least it seems that way in the graph.
 
 # Problem 4
 
